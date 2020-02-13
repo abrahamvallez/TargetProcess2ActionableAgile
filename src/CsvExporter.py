@@ -2,11 +2,7 @@ import json
 import csv
 
 
-class ActionableAgileCSVImporter:
-    def import_from_file(self, file_path):
-        with open(file_path) as file_object:
-            user_stories = json.load(file_object)
-        return user_stories
+class CsvExporter:
 
     def export_to_csv(self, user_stories_data: list):
         csv_headers = user_stories_data[0].keys()
