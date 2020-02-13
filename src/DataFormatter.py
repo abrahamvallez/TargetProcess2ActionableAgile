@@ -3,7 +3,8 @@ class DataFormatter():
         formatted_data: list = []
         i = 0
         for row in data_list:
-            formatted_row = {'ID': row['id']}
+            user_story_data = row["currentUserStory"]
+            formatted_row = {'ID': user_story_data['id']}
             formatted_data.append(formatted_row)
             i += 1
 
