@@ -9,7 +9,7 @@ def test_import_return_a_list():
     assert type(list_returned) == list, "should return a list"
 
 
-def test_should_remove_item_field():
+def test_remove_item_field():
     importer = JsonImporter()
     list_returned: list
     list_returned = importer.import_from_file('tests/json_examples/response.json')
