@@ -1,8 +1,12 @@
 USER_STORIES_STATES = [
     'Open',
+    'Ready',
     'Planned',
     'In Progress',
-    'Done'
+    'Code Review',
+    'Pending DoD',
+    'Done',
+    'Released/Finished'
 ]
 
 KEYS = [
