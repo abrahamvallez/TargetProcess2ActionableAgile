@@ -1,16 +1,31 @@
-class DataFormatter():
-    def format_to_TP(self, data_list: list) -> dict:
-        formatted_data: dict = {}
-        i = 0
-        for row in data_list:
-            user_story_data = row["currentUserStory"]
-            date = row["date"]
-            formatted_row :dict = formatted_data.get(user_story_data['id'])
-            if formatted_row:
-                formatted_row.update({i: date})
-            else:
-                formatted_row = {'ID': user_story_data['id'], 'date': date}
-                formatted_data[user_story_data['id']] = formatted_row
-            i += 1
+USER_STORIES_STATES = [
+    'Open',
+    'Planned',
+    'In Progress',
+    'Done'
+]
 
-        return formatted_data
+KEYS = [
+    'ID'
+]
+
+
+class DataFormatter:
+
+    def format_to_TP(self, data_list: list) -> dict:
+        formatted_dict: dict = {}
+
+        for row in data_list:
+            user_story_id = row["currentUserStory"]['id']
+            user_story_state = row["entityState"]["name"]
+            date = row["date"]
+
+            formatted_row: dict = formatted_dict.get(user_story_id)
+            if user_story_state in USER_STORIES_STATES:
+                if formatted_row:
+                    formatted_row.update({user_story_state: date})
+                else:
+                    formatted_row = {'ID': user_story_id, user_story_state: date}
+                    formatted_dict[user_story_id] = formatted_row
+
+        return formatted_dict

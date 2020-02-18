@@ -4,12 +4,22 @@ from src.CsvExporter import CsvExporter
 from src.DataFormatter import DataFormatter
 from src.JsonImporter import JsonImporter
 
+USER_STORIES_STATES = [
+    'Open',
+    'Planned',
+    'In Progress',
+    'Done'
+]
+
+KEYS = [
+    'ID'
+]
+
 
 def main(importer: JsonImporter, exporter: CsvExporter, formatter: DataFormatter, json_file_path: str):
     list_of_data = importer.import_from_file(json_file_path)
     formatted_data = formatter.format_to_TP(list_of_data)
-    csv_file_path = exporter.export_to_csv(formatted_data)
-    print(csv_file_path)
+    csv_file_path = exporter.export_to_csv(formatted_data, KEYS + USER_STORIES_STATES)
 
 if __name__ == "__main__":
     importer = JsonImporter()
