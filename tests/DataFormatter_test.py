@@ -93,7 +93,7 @@ def test_keep_only_one_state_when_back_and_forth():
     data_formatter = DataFormatter()
     dates: list = [
         "2020-02-16T10:11:50.79",
-        "2020-02-17T10:17:11.977",
+        "2020-02-17T10:17:11.97",
         "2020-02-18T10:13:35.86"]
     states: list = ["Open", "In Progress"]
     data_list = [
@@ -112,7 +112,7 @@ def test_keep_earlier_date_for_state_in_workflow_when_back_and_forth():
     data_formatter = DataFormatter()
     dates: list = [
         "2020-02-16T10:11:50.79",
-        "2020-02-17T10:17:11.977",
+        "2020-02-17T10:17:11.97",
         "2020-02-18T10:13:35.86"]
     states: list = ["Open", "In Progress"]
     data_list = [
@@ -125,15 +125,15 @@ def test_keep_earlier_date_for_state_in_workflow_when_back_and_forth():
     user_story_1_row: dict = formatted_data_dict.get(1)
 
     assert user_story_1_row.get(states[0]) == '2020-02-16T10:11:50.79'
-    assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.977'
+    assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.97'
 
 
-def test_keep_last_state_in_workflow_when_back_and_forth():
+def test_keep_correct_state_in_workflow_when_back_and_forth():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
-                   "2020-02-17T10:17:11.977",
+                   "2020-02-17T10:17:11.97",
                    "2020-02-18T10:13:35.86",
-                   "2020-02-19T10:17:11.977"]
+                   "2020-02-19T10:17:11.97"]
     states: list = ["Open", "In Progress"]
     data_list = [
         {"date": dates[0], "currentUserStory": {"id": 1, "name": "name1"}, "entityState": {"name": states[0]}},
@@ -146,16 +146,16 @@ def test_keep_last_state_in_workflow_when_back_and_forth():
     user_story_1_row: dict = formatted_data_dict.get(1)
 
     assert user_story_1_row.get(states[0]) == '2020-02-16T10:11:50.79'
-    assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.977'
+    assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.97'
 
 
-def test_keep_last_state_in_workflow_when_back_and_forth():
+def test_keep_correct_state_in_workflow_when_back_and_forth_one_step():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
-                   "2020-02-17T10:17:11.977",
-                   "2020-02-18T10:13:35.86",
-                   "2020-02-19T10:14:35.86",
-                   "2020-02-20T10:17:11.977"]
+                   "2020-02-17T10:17:11.97",
+                   "2020-02-18T10:20:35.86",
+                   "2020-02-21T10:14:35.86",
+                   "2020-02-22T10:17:11.97"]
     states: list = ["Open", "In Progress", "Pending DoD", "Done"]
     data_list = [
         {"date": dates[0], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[0]}},
@@ -168,16 +168,66 @@ def test_keep_last_state_in_workflow_when_back_and_forth():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(10)
 
-    assert user_story_1_row[states[3]] == '2020-02-18T10:13:35.86'
+    assert user_story_1_row[states[3]] == '2020-02-18T10:20:35.86'
     assert states[2] not in list(user_story_1_row.keys())
+
+
+def test_keep_correct_state_in_workflow_when_back_and_forth_many_states():
+    data_formatter = DataFormatter()
+    dates: list = ["2020-02-16T10:11:50.79",
+                   "2020-02-17T10:17:11.97",
+                   "2020-02-18T10:20:35.86",
+                   "2020-02-21T10:14:35.86",
+                   "2020-02-22T10:14:35.86",
+                   "2020-02-23T10:14:35.86"]
+    states: list = ["Open", "In Progress", "Code Review", "Pending DoD", "Done", "Released/Finished"]
+    data_list = [
+        {"date": dates[0], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[0]}},
+        {"date": dates[1], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[1]}},
+        {"date": dates[2], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[5]}},
+        {"date": dates[3], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[2]}},
+        {"date": dates[4], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[3]}},
+        {"date": dates[5], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[5]}}
+    ]
+
+    formatted_data_dict = data_formatter.format_to_TP(data_list)
+    user_story_1_row: dict = formatted_data_dict.get(10)
+
+    assert user_story_1_row[states[5]] == '2020-02-18T10:20:35.86'
+    assert states[2] not in list(user_story_1_row.keys())
+    assert states[3] not in list(user_story_1_row.keys())
+
+
+def test_keep_correct_state_in_workflow_when_back_and_forth_to_repeated_state():
+    data_formatter = DataFormatter()
+    dates: list = ["2020-02-16T10:11:50.79",
+                   "2020-02-17T10:17:11.97",
+                   "2020-02-18T10:20:35.86",
+                   "2020-02-21T10:14:35.86",
+                   "2020-02-23T10:17:11.97"]
+    states: list = ["Open", "In Progress", "Pending DoD", "Done"]
+    data_list = [
+        {"date": dates[0], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[0]}},
+        {"date": dates[1], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[1]}},
+        {"date": dates[2], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[2]}},
+        {"date": dates[3], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[3]}},
+        {"date": dates[4], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[2]}}
+    ]
+
+    formatted_data_dict = data_formatter.format_to_TP(data_list)
+    user_story_1_row: dict = formatted_data_dict.get(10)
+
+    assert user_story_1_row[states[3]] == '2020-02-21T10:14:35.86'
+    assert user_story_1_row[states[2]] == '2020-02-18T10:20:35.86'
+
 
 def test_avoid_wrong_back_and_forth_in_less_than_one_day():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
-                   "2020-02-17T10:17:11.977",
-                   "2020-02-17T10:20:35.86",
-                   "2020-02-18T10:15:35.86",
-                   "2020-02-20T10:17:11.977"]
+                   "2020-02-17T10:17:11.97",
+                   "2020-02-18T10:20:35.86",
+                   "2020-02-18T10:21:35.86",
+                   "2020-02-22T10:17:11.97"]
     states: list = ["Open", "In Progress", "Pending DoD", "Done"]
     data_list = [
         {"date": dates[0], "currentUserStory": {"id": 10, "name": "name1"}, "entityState": {"name": states[0]}},
@@ -190,5 +240,5 @@ def test_avoid_wrong_back_and_forth_in_less_than_one_day():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(10)
 
-    assert user_story_1_row.get(states[2]) == '2020-02-18T10:15:35.86'
-    assert user_story_1_row.get(states[3]) == '2020-02-20T10:17:11.977'
+    assert user_story_1_row.get(states[2]) == '2020-02-18T10:21:35.86'
+    assert user_story_1_row.get(states[3]) == '2020-02-22T10:17:11.97'

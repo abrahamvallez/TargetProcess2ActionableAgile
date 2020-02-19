@@ -1,3 +1,6 @@
+import dateutil.parser
+#wrong_state_date = dateutil.parser.parse(wrong_state_date)
+
 USER_STORIES_STATES = [
     'Open',
     'Ready',
@@ -43,8 +46,9 @@ class DataFormatter:
         new_state_changed_date = row_from_data["date"]
         state_date_saved = formatted_row.get(user_story_state)
 
-        if ((not state_date_saved or state_date_saved > new_state_changed_date)
-                and not self.is_a_step_back(formatted_row, row_from_data)):
+        if state_date_saved and state_date_saved > new_state_changed_date:
+            formatted_row.update({user_story_state: new_state_changed_date})
+        if not state_date_saved and not self.is_a_step_back(formatted_row, row_from_data):
             formatted_row.update({user_story_state: new_state_changed_date})
 
     def format_new_user_story(self, row_from_data: dict) -> dict:
@@ -58,13 +62,13 @@ class DataFormatter:
 
     def is_a_step_back(self, formatted_row: dict, row_from_data: dict) -> bool:
         state_id = USER_STORIES_STATES.index(row_from_data["entityState"]["name"])
-        states_before = USER_STORIES_STATES[0:state_id - 1]
+        states_before = USER_STORIES_STATES[:state_id]
         new_state_changed_date = row_from_data["date"]
 
         for state in USER_STORIES_STATES:
             state_date_saved = formatted_row.get(state)
-            if (state_date_saved
-                    and state not in states_before
+            if (state not in states_before
+                    and state_date_saved
                     and new_state_changed_date > state_date_saved):
                 return True
 
