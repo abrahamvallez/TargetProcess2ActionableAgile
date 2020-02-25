@@ -29,7 +29,7 @@ def test_formatted_data_has_same_ids_from_data_list():
     assert formatted_data_dict.get(3).get('ID') == ids[2], "Third element Id should be 1"
 
 
-def test_dates_are_grouped_same_row_by_id():
+def test_dates_are_grouped_in_same_row_by_id():
     data_formatter = DataFormatter()
     dates: list = [
         "2020-02-16T10:11:50.79",
@@ -108,27 +108,7 @@ def test_keep_only_one_state_when_back_and_forth():
     assert list(user_story_1_row.keys()) == ["ID", "Open", "In Progress"], "Should have only two states"
 
 
-def test_keep_earlier_date_for_state_in_workflow_when_back_and_forth():
-    data_formatter = DataFormatter()
-    dates: list = [
-        "2020-02-16T10:11:50.79",
-        "2020-02-17T10:17:11.97",
-        "2020-02-18T10:13:35.86"]
-    states: list = ["Open", "In Progress"]
-    data_list = [
-        {"date": dates[0], "currentUserStory": {"id": 1, "name": "name1"}, "entityState": {"name": states[0]}},
-        {"date": dates[1], "currentUserStory": {"id": 1, "name": "name1"}, "entityState": {"name": states[1]}},
-        {"date": dates[2], "currentUserStory": {"id": 1, "name": "name1"}, "entityState": {"name": states[0]}}
-    ]
-
-    formatted_data_dict = data_formatter.format_to_TP(data_list)
-    user_story_1_row: dict = formatted_data_dict.get(1)
-
-    assert user_story_1_row.get(states[0]) == '2020-02-16T10:11:50.79'
-    assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.97'
-
-
-def test_keep_correct_state_in_workflow_when_back_and_forth():
+def test_keep_earlier_date_for_same_state_in_workflow_when_back_and_forth():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
                    "2020-02-17T10:17:11.97",
@@ -149,7 +129,7 @@ def test_keep_correct_state_in_workflow_when_back_and_forth():
     assert user_story_1_row.get(states[1]) == '2020-02-17T10:17:11.97'
 
 
-def test_keep_correct_state_in_workflow_when_back_and_forth_one_step():
+def test_keep_late_state_in_workflow_when_back_and_forth_one_step():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
                    "2020-02-17T10:17:11.97",
@@ -172,7 +152,7 @@ def test_keep_correct_state_in_workflow_when_back_and_forth_one_step():
     assert states[2] not in list(user_story_1_row.keys())
 
 
-def test_keep_correct_state_in_workflow_when_back_and_forth_many_states():
+def test_keep_late_state_in_workflow_when_back_and_forth_many_states():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
                    "2020-02-17T10:17:11.97",
@@ -193,12 +173,12 @@ def test_keep_correct_state_in_workflow_when_back_and_forth_many_states():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(10)
 
-    assert user_story_1_row[states[5]] == '2020-02-18T10:20:35.86'
-    assert states[2] not in list(user_story_1_row.keys())
-    assert states[3] not in list(user_story_1_row.keys())
+    assert user_story_1_row[states[5]] == '2020-02-18T10:20:35.86', "late state should be Released/Finished"
+    assert states[2] not in list(user_story_1_row.keys()), "back and forth should not be saved"
+    assert states[3] not in list(user_story_1_row.keys()), "back and forth should not be saved"
 
 
-def test_keep_correct_state_in_workflow_when_back_and_forth_to_repeated_state():
+def test_keep_late_state_in_workflow_when_back_and_forth_to_repeated_state():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
                    "2020-02-17T10:17:11.97",
@@ -217,11 +197,11 @@ def test_keep_correct_state_in_workflow_when_back_and_forth_to_repeated_state():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(10)
 
-    assert user_story_1_row[states[3]] == '2020-02-21T10:14:35.86'
-    assert user_story_1_row[states[2]] == '2020-02-18T10:20:35.86'
+    assert user_story_1_row[states[3]] == '2020-02-21T10:14:35.86', "late state should be earlier Done"
+    assert user_story_1_row[states[2]] == '2020-02-18T10:20:35.86', "Pending DoD should be earlier date"
 
 
-def test_avoid_wrong_back_and_forth_in_less_than_one_day():
+def test_keep_state_when_wrong_back_and_forth_in_less_than_one_day():
     data_formatter = DataFormatter()
     dates: list = ["2020-02-16T10:11:50.79",
                    "2020-02-17T10:17:11.97",
@@ -240,5 +220,5 @@ def test_avoid_wrong_back_and_forth_in_less_than_one_day():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(10)
 
-    assert user_story_1_row.get(states[2]) == '2020-02-18T10:21:35.86'
-    assert user_story_1_row.get(states[3]) == '2020-02-22T10:17:11.97'
+    assert user_story_1_row.get(states[2]) == '2020-02-18T10:21:35.86', "Pending Dod should be saved"
+    assert user_story_1_row.get(states[3]) == '2020-02-22T10:17:11.97', "Wrong Done state should be deleted"
