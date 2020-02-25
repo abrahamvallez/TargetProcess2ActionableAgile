@@ -48,8 +48,15 @@ class DataFormatter:
 
         if state_date_saved and state_date_saved > new_state_changed_date:
             formatted_row.update({user_story_state: new_state_changed_date})
-        if not state_date_saved and not self.is_a_step_back(formatted_row, row_from_data):
-            formatted_row.update({user_story_state: new_state_changed_date})
+        if not state_date_saved:
+            state_from = self.is_a_step_back(formatted_row, row_from_data)
+            if not state_from:
+                formatted_row.update({user_story_state: new_state_changed_date})
+            else:
+                state_from_date = dateutil.parser.parse(formatted_row.get(state_from))
+                if (dateutil.parser.parse(new_state_changed_date) - state_from_date).days < 1:
+                    formatted_row.pop(state_from)
+                    formatted_row.update({user_story_state: new_state_changed_date})
 
     def format_new_user_story(self, row_from_data: dict) -> dict:
         user_story_id = row_from_data["currentUserStory"]['id']
@@ -70,7 +77,7 @@ class DataFormatter:
             if (state not in states_before
                     and state_date_saved
                     and new_state_changed_date > state_date_saved):
-                return True
+                return state
 
         return False
 
