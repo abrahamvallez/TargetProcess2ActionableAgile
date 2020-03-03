@@ -17,6 +17,7 @@ USER_STORIES_STATES = [
 
 KEYS = [
     'ID',
+    'link',
     'title'
 ]
 

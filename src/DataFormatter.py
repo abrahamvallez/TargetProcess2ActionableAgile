@@ -11,9 +11,7 @@ USER_STORIES_STATES = [
     'Released/Finished'
 ]
 
-KEYS = [
-    'ID'
-]
+LINK_URL = "http://targetprocess.voxelgroup.net/TargetProcess2/entity/"
 
 DAYS_ERROR_ALLOWED = 1
 
@@ -62,6 +60,7 @@ class DataFormatter:
         user_story_state = row_from_data["entityState"]["name"]
         return {
             'ID': row_from_data["currentUserStory"]['id'],
+            'link': LINK_URL + str(row_from_data["currentUserStory"]['id']),
             'title': row_from_data["currentUserStory"]['name'],
             user_story_state: row_from_data["date"]
         }
