@@ -16,7 +16,8 @@ USER_STORIES_STATES = [
 ]
 
 KEYS = [
-    'ID'
+    'ID',
+    'title'
 ]
 
 

@@ -105,7 +105,7 @@ def test_keep_only_one_state_when_back_and_forth():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(1)
 
-    assert list(user_story_1_row.keys()) == ["ID", "Open", "In Progress"], "Should have only two states"
+    assert list(user_story_1_row.keys()) == ["ID", "title", "Open", "In Progress"], "Should have only two states"
 
 
 def test_keep_earlier_date_for_same_state_in_workflow_when_back_and_forth():
@@ -222,3 +222,17 @@ def test_keep_state_when_wrong_back_and_forth_in_less_than_one_day():
 
     assert user_story_1_row.get(states[2]) == '2020-02-18T10:21:35.86', "Pending Dod should be saved"
     assert user_story_1_row.get(states[3]) == '2020-02-22T10:17:11.97', "Wrong Done state should be deleted"
+
+def test_a_new_user_story_has_a_title():
+    data_formatter = DataFormatter()
+    data_list = [
+        {"date": "2020-02-16T10:11:50.79", "currentUserStory": {"id": 1, "name": "name1"},
+         "entityState": {"name": "Open"}},
+        {"date": "2020-02-17T10:11:50.79", "currentUserStory": {"id": 2, "name": "name2"},
+         "entityState": {"name": "In Progress"}},
+        {"date": "2020-02-18T10:11:50.79", "currentUserStory": {"id": 3, "name": "name2"},
+         "entityState": {"name": "Done"}}
+    ]
+
+    formatted_data_dict = data_formatter.format_to_TP(data_list)
+    assert formatted_data_dict.get(1).get('title') == "name1", "title should be exist"

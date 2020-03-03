@@ -59,12 +59,11 @@ class DataFormatter:
                 formatted_row.update({user_story_state: updated_date})
 
     def format_new_user_story(self, row_from_data: dict) -> dict:
-        user_story_id = row_from_data["currentUserStory"]['id']
         user_story_state = row_from_data["entityState"]["name"]
-        date_in_row_from_data = row_from_data["date"]
         return {
-            'ID': user_story_id,
-            user_story_state: date_in_row_from_data
+            'ID': row_from_data["currentUserStory"]['id'],
+            'title': row_from_data["currentUserStory"]['name'],
+            user_story_state: row_from_data["date"]
         }
 
     def is_an_error_in_workflow_update(self, state_where_come_from_date, updated_date) -> bool:
