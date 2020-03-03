@@ -58,10 +58,16 @@ class DataFormatter:
 
     def format_new_user_story(self, row_from_data: dict) -> dict:
         user_story_state = row_from_data["entityState"]["name"]
+        if row_from_data.get("currentUserStory").get('cycleTime'):
+            cycle_time = round(row_from_data["currentUserStory"]['cycleTime'])
+        else:
+            cycle_time = None
+
         return {
             'ID': row_from_data["currentUserStory"]['id'],
             'link': LINK_URL + str(row_from_data["currentUserStory"]['id']),
             'title': row_from_data["currentUserStory"]['name'],
+            'cycleTime': cycle_time,
             user_story_state: row_from_data["date"]
         }
 

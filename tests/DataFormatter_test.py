@@ -105,7 +105,7 @@ def test_keep_only_one_state_when_back_and_forth():
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     user_story_1_row: dict = formatted_data_dict.get(1)
 
-    assert list(user_story_1_row.keys()) == ["ID", "link", "title", "Open", "In Progress"], "Should have only two states"
+    assert list(user_story_1_row.keys()) == ["ID", "link", "title", "cycleTime", "Open", "In Progress"], "Should have only two states"
 
 
 def test_keep_earlier_date_for_same_state_in_workflow_when_back_and_forth():
@@ -250,3 +250,17 @@ def test_a_user_story_has_a_link_with_id():
 
     formatted_data_dict = data_formatter.format_to_TP(data_list)
     assert '1' in formatted_data_dict.get(1).get('link'), "link with id should be exist"
+
+def test_user_story_has_cycletime_measured_by_targetProcess():
+    data_formatter = DataFormatter()
+    data_list = [
+        {"date": "2020-02-16T10:11:50.79", "currentUserStory": {"id": 1, "name": "name1", "cycleTime": 1},
+         "entityState": {"name": "Open"}},
+        {"date": "2020-02-17T10:11:50.79", "currentUserStory": {"id": 2, "name": "name2", "cycleTime": 12},
+         "entityState": {"name": "In Progress"}},
+        {"date": "2020-02-18T10:11:50.79", "currentUserStory": {"id": 3, "name": "name2", "cycleTime": 3},
+         "entityState": {"name": "Done"}}
+    ]
+
+    formatted_data_dict = data_formatter.format_to_TP(data_list)
+    assert formatted_data_dict.get(1).get('cycleTime') == 1, "cycleTime should be exist"
