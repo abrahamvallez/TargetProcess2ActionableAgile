@@ -2,12 +2,20 @@
   {
     "date":"2020-02-05T16:27:21.18",
     "currentUserStory":{"id":123456,"name":"Query UX: testing test that is tested"},
-    "entityState":{"name":"Open"}
+    "entityState":{"name":"Open"},
+    "feature": {
+      "resourceType": "Feature",
+      "id": 12,
+      "name": "featureXX"}
   },
   {
     "date":"2020-02-05T16:38:04.6",
     "currentUserStory":{"id":123456,"name":"Query UX: testing test that is tested"},
-    "entityState":{"name":"Planned"}
+    "entityState":{"name":"Planned"},
+    "feature": {
+      "resourceType": "Feature",
+      "id": 12,
+      "name": "featureXX"}
   },
   {
     "date":"2020-02-05T18:04:53.057",

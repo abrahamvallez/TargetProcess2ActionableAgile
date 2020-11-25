@@ -29,7 +29,9 @@ KEYS = [
 ]
 
 ATTRIBUTE_FIELDS = [
-    'cycleTime'
+    'cycleTime',
+    'featureId',
+    'featureName'
 ]
 
 

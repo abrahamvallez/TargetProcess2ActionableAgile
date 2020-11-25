@@ -117,7 +117,7 @@ def test_keep_only_one_state_when_back_and_forth():
     formatted_data_dict = data_formatter.format_from_raw_TP_data(data_list, USER_STORIES_STATES, ELEMENT_KEY)
     user_story_1_row: dict = formatted_data_dict.get(1)
 
-    assert list(user_story_1_row.keys()) == ["ID", "link", "title", "cycleTime", "Open", "In Progress"], "Should have only two states"
+    assert list(user_story_1_row.keys()) == ["ID", "link", "title", "cycleTime", 'featureId', 'featureName', "Open", "In Progress"], "Should have only two states"
 
 
 def test_keep_earlier_date_for_same_state_in_workflow_when_back_and_forth():
@@ -276,3 +276,37 @@ def test_user_story_has_cycletime_measured_by_targetProcess():
 
     formatted_data_dict = data_formatter.format_from_raw_TP_data(data_list, USER_STORIES_STATES, ELEMENT_KEY)
     assert formatted_data_dict.get(1).get('cycleTime') == 1, "cycleTime should be exist"
+
+def test_user_story_has_featureId_and_featureName_as_a_field():
+    data_formatter = DataFormatter()
+    data_list = [
+        {"date": "2020-02-16T10:11:50.79", ELEMENT_KEY: {"id": 1,
+                                                         "name": "name1",
+                                                         "cycleTime": 1},
+         "entityState": {"name": "Open"},
+         "feature": {
+             "id": 12,
+             "name": "featureXX"}
+         },
+        {"date": "2020-02-17T10:11:50.79", ELEMENT_KEY: {"id": 2,
+                                                         "name": "name2",
+                                                         "cycleTime": 12},
+         "entityState": {"name": "In Progress"},
+         "feature": {
+             "id": 12,
+             "name": "featureXX"}
+         },
+        {"date": "2020-02-18T10:11:50.79", ELEMENT_KEY: {"id": 3,
+                                                         "name": "name2",
+                                                         "cycleTime": 3},
+         "entityState": {"name": "Done"},
+         "feature": {
+             "id": 12,
+             "name": "featureXX"}
+         }
+    ]
+
+    formatted_data_dict = data_formatter.format_from_raw_TP_data(data_list, USER_STORIES_STATES, ELEMENT_KEY)
+    assert formatted_data_dict.get(1).get('featureId') == 12, "featureId should be exist"
+    assert formatted_data_dict.get(1).get('featureName') == "featureXX", "featureName should be exist"
+

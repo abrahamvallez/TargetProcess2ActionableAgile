@@ -52,11 +52,20 @@ class DataFormatter:
         else:
             cycle_time = None
 
+        if row_from_data.get('feature'):
+            feature_id = row_from_data.get('feature').get('id')
+            feature_name = row_from_data.get('feature').get('name')
+        else:
+            feature_id = None
+            feature_name = None
+
         return {
             'ID': row_from_data[element_key]['id'],
             'link': LINK_URL + str(row_from_data[element_key]['id']),
             'title': row_from_data[element_key]['name'],
             'cycleTime': cycle_time,
+            'featureId': feature_id,
+            'featureName': feature_name,
             user_story_state: row_from_data["date"]
         }
 
