@@ -1,6 +1,7 @@
 # TargetProcess2ActionableAgile
 
 UserStories
+
 ****/api/history/v2/UserStory?take=2000&orderBy=CurrentUserStory,date&isodate=1&select={Date,CurrentUserStory:{CurrentUserStory.id,CurrentUserStory.name,CurrentUserStory.CycleTime,CurrentUserStory.customvalues},EntityState:{EntityState.name}, Feature}&where=(Team.id=54254) and (Project.id=113371) and (CurrentUserStory.CreateDate>DateTime.Parse("2020-02-01")) and (IsChangedEntityState=true)
 
 Features
