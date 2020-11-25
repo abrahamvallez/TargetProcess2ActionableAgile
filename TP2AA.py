@@ -34,7 +34,7 @@ ATTRIBUTE_FIELDS = [
     'featureName'
 ]
 
-DEFAULT_TYPE = 'UserStories'
+DEFAULT_TYPE = 'userStories'
 
 
 def main(importer: JsonImporter, exporter: CsvExporter, formatter: DataFormatter, json_file_path: str, element_type: str = "UserStories"):
