@@ -310,3 +310,23 @@ def test_user_story_has_featureId_and_featureName_as_a_field():
     assert formatted_data_dict.get(1).get('featureId') == 12, "featureId should be exist"
     assert formatted_data_dict.get(1).get('featureName') == "featureXX", "featureName should be exist"
 
+def test_user_story_has_featureId_and_featureName_as_a_void_field():
+    data_formatter = DataFormatter()
+    data_list = [
+        {"date": "2020-02-16T10:11:50.79", ELEMENT_KEY: {"id": 1,
+                                                         "name": "name1",
+                                                         "cycleTime": 1},
+         "entityState": {"name": "Open"}},
+        {"date": "2020-02-17T10:11:50.79", ELEMENT_KEY: {"id": 2,
+                                                         "name": "name2",
+                                                         "cycleTime": 12},
+         "entityState": {"name": "In Progress"}},
+        {"date": "2020-02-18T10:11:50.79", ELEMENT_KEY: {"id": 3,
+                                                         "name": "name2",
+                                                         "cycleTime": 3},
+         "entityState": {"name": "Done"}}
+    ]
+
+    formatted_data_dict = data_formatter.format_from_raw_TP_data(data_list, USER_STORIES_STATES, ELEMENT_KEY)
+    assert formatted_data_dict.get(1).get('featureId') is None, "featureId should be void"
+    assert formatted_data_dict.get(1).get('featureName') is None, "featureName should be void"
